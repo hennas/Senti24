@@ -1,0 +1,23 @@
+<html>
+    <head>
+        <title>Senti24</title>
+    </head>
+    <body>
+        <h1>Welcome to Senti24</h1>
+        <h2>Before accessing the main application, please enter the following settings:</h2>
+        <form action="/settings" method="POST">
+            <!--Inputs for the required paths-->
+            <label for="jar_path">Absolute path to SentiStrength.jar</label><br>
+            <input type="text" id="jar_path" name="jar_path" value="{{ jar }}"><br>
+
+            <label for="data_path">Absolute path to SentiStrength.jar</label><br>
+            <input type="text" id="data_path" name="data_path" value="{{ data }}"><br>
+
+            <label for="db_path">Absolute path to SentiStrength.jar</label><br>
+            <input type="text" id="db_path" name="db_path" value="{{ db }}"><br>
+
+            <!--Button to update the settings with-->
+            <input name="update" type="submit" value="Update Settings">
+        </form>
+    </body>
+</html>
