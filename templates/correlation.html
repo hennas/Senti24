@@ -1,0 +1,32 @@
+<html>
+    <head>
+        <title>Senti24 Correlations</title>
+    </head>
+
+    <body>
+        <div style="display: {{ display }};">
+            <h3>{{ msg }}</h3>
+        </div>
+        <table style="width:50%">
+            <tr>
+                <th>Index</th>
+                <th>Correlation</th>
+                <th>Data Points</th>
+            </tr>
+            <!--Add indexes in a loop-->
+            {%for i in range(0, len)%}
+                <tr>
+                    <td>{{correlations[i][0]}}</td>
+                    <td>{{correlations[i][1]}}</td>
+                    <td>{{correlations[i][2]}}</td>
+                </tr>
+            {%endfor%}
+        </table>
+
+        <!--Back to / -->
+         <form action="/" method="GET">
+            <button name="subject" type="submit" value="">Back to Main Page</button>
+         </form>
+
+    </body>
+</html>
