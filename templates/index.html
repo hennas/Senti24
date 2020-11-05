@@ -1,20 +1,48 @@
 <html>
     <head>
-        <!--Include Ajax-->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
         <title>Senti24 Main Page</title>
     </head>
     <body>
         <h1>Welcome to the Senti24 Main Page!</h1>
-        <h2>Heres a plot</h2>
-        
-        <!--Add visualization Button here-->
-        <form action="/" method="post">
-            Choose Plot to Visualize:
-            <button name="subject" type="submit" value="lineplot">Line Plot</button>
-            <button name="subject" type="submit" value="barplot">Bar Plot</button>
+
+        <!--Back to /-->
+        <form action="/settings" method="GET">
+            <button name="subject" type="submit" value="">Back to Settings</button>
         </form>
-        
-        <img src="/plot.png" alt="Visualized results">
+
+        <!--Info-->
+        <h2>After pressing a button, be prepared to wait for a while, as analysing the data takes time</h2>
+        <h2>During processing your browser should show that the page is loading</h2>
+        <h2>Alternatively, if you suspect something is wrong, take a look at the log files found in /logs/gui.log</h2>
+
+        <!--Add analysis buttons here-->
+        <form action="/" method="post">
+            Analysis: <br>
+            <button name="subject" type="submit" value="sentiScore">Sentiment Scores</button>
+            <button name="subject" type="submit" value="sentiTransition">Sentiment Transitions</button>
+            <button name="subject" type="submit" value="categorize">Categorize Threads</button>
+            <button name="subject" type="submit" value="categoryTransition">Category Transitions</button>
+            <button name="subject" type="submit" value="correlate">Index Correlation</button>
+        </form>
+
+        <div style="display: {{ display_analysis_msg }};">
+            <h3>{{ analysis_msg }}</h3>
+        </div>
+
+        <!--Add visualization Buttons here-->
+        <form action="/" method="post">
+            Choose Plot to Visualize: <br>
+            <button name="subject" type="submit" value="visSenti">Sentiment Evolution</button>
+            <button name="subject" type="submit" value="visSentiTranstition">Sentiment Transitions</button>
+            <button name="subject" type="submit" value="categoryFreq">Category Frequency</button>
+            <button name="subject" type="submit" value="categoryTransition">Category Transitions</button>
+            <button name="subject" type="submit" value="zipf">Zipf's Law</button>
+        </form>
+
+        <div style="display: {{ display_visualize_msg }};">
+            <h3>{{ visualize_msg }}</h3>
+        </div>
+
+        <img src="/plot.png" style="width: 1100px; height: 700px;">
     </body>
 </html>
