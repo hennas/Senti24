@@ -1,5 +1,4 @@
 import io
-import random
 import logging
 from os import path
 import pandas as pd
@@ -12,6 +11,9 @@ from Senti24.senti_transition import SentiTransition
 from Senti24.senti_correlation import SentiCorrelation
 from Senti24.senti_plot import SentiPlot
 from Senti24.senti_transition_plot import SentiTransitionPlot
+from Senti24.categorization import Categorizer
+from Senti24.category_transitions import CategoryTransitions
+from Senti24.zipfs_law import ZipfsLaw
 
 app = Flask(__name__, template_folder='templates')
 # PATHS
@@ -50,6 +52,12 @@ def index():
         if what_to_do == 'correlate':
             what_to_do = ''
             return redirect('/correlation')
+        # Displaying Sentiment transitions
+        elif what_to_do == 'visSentiTranstition' and path.exists('data/sentiment-transitions.csv'):
+            return redirect('/transitions')
+        # Display category transitions
+        elif what_to_do == 'visCategoryTransition' and path.exists('data/category_transitions.csv'):
+            return redirect('/transitions')
         result = determine_analysis(what_to_do)
         return render_template('index.html', display_analysis_msg=result[0], analysis_msg=result[1],
                                display_visualize_msg=result[2], visualize_msg=result[3])
@@ -92,10 +100,10 @@ def determine_analysis(what: str):
     :return: What to display to the user
     """
     global senti_jar_path, senti_jar_path, db
-    if db is None:
-        return ['block', 'Please load the database into memory using the /Settings page', 'none', '']
     # Sentiment calculation
     if what == 'sentiScore':
+        if db is None:
+            return ['block', 'Please load the database into memory and check SentiStrength paths using the /Settings page, and try again', 'none', '']
         # Create the SentiScore object
         senti = SentiScore(senti_jar_path, senti_data_path)
         # Update the database with sentiments, and save result
@@ -104,7 +112,7 @@ def determine_analysis(what: str):
     # Sentiment transition calculation
     elif what == 'sentiTransition':
         # Check memory
-        if 'senti_avg' in db:
+        if db is not None and 'senti_avg' in db:
             logger.info('Sentiment scores found in memory, using those values')
             SentiTransition().calculate_transitions(db['senti_avg'].values)
             return ['block', 'Number of sentiment transitions calculated. You can check the result from data/sentiment-transitions.csv', 'none', '']
@@ -113,11 +121,37 @@ def determine_analysis(what: str):
             logger.info('Sentiment scores not in memory, using data/sentiment-scores.csv')
             data = pd.read_csv('data/sentiment-scores.csv')
             SentiTransition().calculate_transitions(data['senti_avg'].values)
-            data = None
+            data = None # Remove this from memory
             return ['block', 'Number of sentiment transitions calculated. You can check the result from data/sentiment-transitions.csv', 'none', '']
         # Sentiment scores not found
         else:
             return ['block', 'Please calculate the sentiment scores first', 'none', '']
+    # Thread categorization
+    elif what == 'categorize':
+        # Check memory
+        if 'senti_avg' in db:
+            logger.info('Sentiment scores found in memory, using those values')
+            # Create the categorized object and start categorization
+            Categorizer(db).categorize_main()
+            return ['block', 'Threads Categorized! You can view the result form the file data/sentiment-data+features.csv', 'none', '']
+        # Check data/
+        elif path.exists('data/sentiment-scores.csv'):
+            logger.info('Sentiment scores not in memory, using data/sentiment-scores.csv')
+            data = pd.read_csv('data/sentiment-scores.csv')
+            Categorizer(data).categorize_main()
+            data = None # Remove this from memory
+            return ['block', 'Threads Categorized! You can view the result form the file data/sentiment-data+features.csv', 'none', '']
+        # Sentiment scores not found
+        else:
+            return ['block', 'Please calculate the sentiment scores first', 'none', '']
+    # Category Transitions
+    elif what == 'categoryTransition':
+        if not path.exists('data/sentiment-data+features.csv'):
+            return ['block', 'Please complete thread categorization first', 'none', '']
+        CategoryTransitions().get_transitions()
+        return ['block', 'Category Transitions calculated! You can view the results from data/category_transitions.csv', 'none', '']
+
+    # No match. This should only happen when the user first loads /
     return ['none', '', 'none', '']
 
 
@@ -142,6 +176,31 @@ def load_settings() -> [str]:
         logger.info('Failed to load database from the given location')
         result[2] = 'block'
     return result
+
+@app.route('/transitions')
+def display_transitions():
+    """
+    This page displays the sentiment and category transitions inside a dynamically created table
+    :return: The transitions page
+    """
+    global what_to_do, logger
+    logger.info('User accessing /transitions')
+    if what_to_do == 'visSentiTranstition':
+        what_to_do = ''
+        data = pd.read_csv('data/sentiment-transitions.csv')
+        data = data.values.tolist()
+        data[:0] = [['FROM/TO', 'pos', 'neg', 'neu']]
+        return render_template('transitions.html', display='none', msg='', data=data, len_rows=len(data), len_cols=len(data[0]))
+    elif what_to_do == 'visCategoryTransition':
+        what_to_do = ''
+        data = pd.read_csv('data/category_transitions.csv')
+        data = data.values.tolist()
+        data[:0] = [['FROM/TO', 'Announcement', 'Question', 'Negative Reaction', 'Appreciation', 'Narration', 'Positive Narration', 'Negative Narration']]
+        return render_template('transitions.html', display='none', msg='', data=data, len_rows=len(data),
+                               len_cols=len(data[0]))
+    else:
+        what_to_do = ''
+        return render_template('transitions.html', display='block', msg='Something went wrong', data=[], len_rows=0, len_cols=0)
 
 @app.route('/correlation')
 def display_correlation():
@@ -185,15 +244,19 @@ def create_figure():
     """
     global what_to_do, db, logger
     fig = None
+    # Sentiment Evolution
     if what_to_do == 'visSenti':
         if db is not None and 'senti_avg' in db:
             fig = SentiPlot().draw_to_gui(db[['year', 'month', 'senti_avg']])
         elif path.exists('data/sentiment-scores.csv'):
             data = pd.read_csv('data/sentiment-scores.csv')[['year', 'month', 'senti_avg']]
             fig = SentiPlot().draw_to_gui(data)
-    elif what_to_do == 'visSentiTranstition' and path.exists('data/sentiment-transitions.csv'):
-        data = pd.read_csv('data/sentiment-transitions.csv')
-        fig = SentiTransitionPlot().draw_for_gui(data)
+    #elif what_to_do == 'visSentiTranstition' and path.exists('data/sentiment-transitions.csv'):
+    #    data = pd.read_csv('data/sentiment-transitions.csv')
+    #    fig = SentiTransitionPlot().draw_for_gui(data)
+    # Zipf's Law
+    elif what_to_do == 'zipf' and path.exists('data/sentiment-data+features.csv'):
+        fig = ZipfsLaw().fit_zipfs_law()
     else:
         fig = Figure()
         axis = fig.add_subplot(1, 1, 1)
