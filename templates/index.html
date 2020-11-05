@@ -22,11 +22,10 @@
             <button name="subject" type="submit" value="sentiTransition">Sentiment Transitions</button>
             <button name="subject" type="submit" value="categorize">Categorize Threads</button>
             <button name="subject" type="submit" value="categoryTransition">Category Transitions</button>
-            <button name="subject" type="submit" value="correlate">Index Correlation</button>
         </form>
 
         <div style="display: {{ display_analysis_msg }};">
-            <h3>{{ analysis_msg }}</h3>
+            <h3>Important Message: {{ analysis_msg }}</h3>
         </div>
 
         <!--Add visualization Buttons here-->
@@ -34,8 +33,8 @@
             Choose Plot to Visualize: <br>
             <button name="subject" type="submit" value="visSenti">Sentiment Evolution</button>
             <button name="subject" type="submit" value="visSentiTranstition">Sentiment Transitions</button>
-            <button name="subject" type="submit" value="categoryFreq">Category Frequency</button>
-            <button name="subject" type="submit" value="categoryTransition">Category Transitions</button>
+            <button name="subject" type="submit" value="correlate">Index Correlation</button>
+            <button name="subject" type="submit" value="visCategoryTransition">Category Transitions</button>
             <button name="subject" type="submit" value="zipf">Zipf's Law</button>
         </form>
 
