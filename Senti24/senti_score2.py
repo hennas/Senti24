@@ -40,6 +40,32 @@ class SentiScore:
         self.logger.info(f'Sentiments parsed, took {time.time()-start}s')
         return [s_pos, s_neg, s_sum]
 
+    def add_sentiment(self, db) -> pd.DataFrame:
+        """
+        Adds sentiment scores to the preprocessed data. Saves result to data/sentiment_scores.csv
+        :param db: The preprocessed data
+        :return: The modified database
+        """
+        # Extract texts and titles from the DB
+        titles = db['title'].values
+        texts = db['text'].values
+        # Calculate sentiments
+        title_sentiment = self.array_sentiment(titles)
+        text_sentiment = self.array_sentiment(texts)
+        # Add the sentiments to the DB
+        self.logger.info('Adding sentiments to the database')
+        db['title_s_pos'] = title_sentiment[0]
+        db['title_s_neg'] = title_sentiment[1]
+        db['title_s_sum'] = title_sentiment[2]
+        db['text_s_pos'] = text_sentiment[0]
+        db['text_s_neg'] = text_sentiment[1]
+        db['text_s_sum'] = text_sentiment[2]
+        db['senti_avg'] = (db['title_s_sum'] + db['text_s_sum']) / 2
+        self.logger.info('Saving result to data/sentiment-scores.csv')
+        # Save the result
+        db.to_csv('data/sentiment-scores.csv', index=False)
+        return db
+
 
 if __name__ == '__main__':
     # Set logging format
@@ -52,16 +78,7 @@ if __name__ == '__main__':
     # Start SentiStrength
     senti = SentiScore(args.j, args.d)
     # Load the preprocessed data for sentiment analysis
-    data = pd.read_csv('data_combined_preprocessed.csv')
-
-    """
-    alku = len(data)
-    data = data[~data.title.isnull()]
-    data = data[[len(t) > 3 for t in data['title']]]
-    data = data[[len(t) > 3 for t in data['text']]]
-    print(alku-len(data))
-    data.to_csv('data_combined_preprocessed.csv', index=False)
-    """
+    data = pd.read_csv('data/data_combined_preprocessed.csv')
 
     # Extract titles and text from the data
     titles = data['title'].values
