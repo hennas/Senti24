@@ -1,0 +1,27 @@
+<html>
+    <head>
+        <title>Senti24 Transitions</title>
+    </head>
+
+    <body>
+        <div style="display: {{ display }};">
+            <h3>{{ msg }}</h3>
+        </div>
+        <table style="width:50%">
+            <!--Add indexes in a loop-->
+            {%for i in range(0, len_rows)%}
+                <tr>
+                {%for j in range(0, len_cols)%}
+                    <td>{{data[i][j]}}</td>
+                {%endfor%}
+                </tr>
+            {%endfor%}
+        </table>
+
+        <!--Back to / -->
+         <form action="/" method="GET">
+            <button name="subject" type="submit" value="">Back to Main Page</button>
+         </form>
+
+    </body>
+</html>
