@@ -1,0 +1,5 @@
+sentistrength
+pandas
+Flask
+scikit-learn
+matplotlib
