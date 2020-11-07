@@ -26,4 +26,3 @@ pilluperse
 huora
 mieshuora
 kyrpäperse
-hulivittu
