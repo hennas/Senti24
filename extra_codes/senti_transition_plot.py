@@ -2,6 +2,10 @@ import logging
 import pandas as pd
 from matplotlib.figure import Figure
 
+"""
+Old way of drawing transitions in the GUI, changed to HTML table later
+"""
+
 
 class SentiTransitionPlot:
     def __init__(self):
