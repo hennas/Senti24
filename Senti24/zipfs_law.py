@@ -1,16 +1,16 @@
 import logging
 import pandas as pd
 import numpy as np
+from time import time
 import scipy.stats as ss
 from scipy.optimize import curve_fit
 import matplotlib.pyplot as plt
 
 
 class ZipfsLaw:
-    def __init__(self):
+    def __init__(self, data: pd.DataFrame):
         self.logger = logging.getLogger('zips-law')
-        self.logger.info('Reading data/sentiment-data+features.csv')
-        self.cats = pd.read_csv('data/sentiment-data+features.csv').simple_heuristic_cat
+        self.cats = data
 
     def get_category_freqs(self, cats):
         """
@@ -43,6 +43,8 @@ class ZipfsLaw:
         as well as draws a plot of it.
         Then fits a power law curve onto the points and draws a plot of it.
         """
+        self.logger.info("Starting to draw plot with Zipf's law")
+        start = time()
         freqs = self.get_category_freqs(self.cats)
         ranks = self.get_category_ranks(freqs)
         freqs_ranks = sorted(list(zip(freqs.keys(), freqs.values(), ranks)), key=lambda x: x[2])
@@ -71,10 +73,11 @@ class ZipfsLaw:
         ax2.set_xlabel('rank', fontsize=15)
         ax2.set_title('Category frequencies and ranks plot + power law fit', fontsize=16)
 
+        self.logger.info(f'Plot done, took {time()-start}')
         return fig
 
 
 if __name__ == '__main__':
-    # data = pd.read_csv('data/sentiment-data+features.csv')
-    fig = ZipfsLaw().fit_zipfs_law()
+    data = pd.read_csv('data/sentiment-data+features.csv')
+    fig = ZipfsLaw(data.simple_heuristic_cat).fit_zipfs_law()
     fig.savefig('zipf.png', format="png")
