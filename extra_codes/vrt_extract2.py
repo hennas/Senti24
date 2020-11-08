@@ -5,6 +5,10 @@ import pandas as pd
 import statistics
 import xml.etree.ElementTree as XML
 
+"""
+This code was used to extract threads from the Suomi24 dataset
+"""
+
 
 class VRTExtract2:
     def __init__(self, vrt_file: str, db_loc: str):
