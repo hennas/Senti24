@@ -13,6 +13,7 @@ class Categorizer:
         self.logger = logging.getLogger('Categorizer')
         self.data = data
         # Load related data
+        self.logger.info('Loading word data')
         self.sentiadjs = self.load_sentiadjs()
         self.questions = self.load_wordfile('data/q_words.txt')
         self.negations = self.load_wordfile('data/neg_words.txt')
@@ -180,14 +181,10 @@ class Categorizer:
 
 if __name__ == '__main__':
     # Initialize logging into the file "categorization.log"
-    logging.basicConfig(filename="categorization.log",
-                        filemode='a',
-                        format='%(asctime)s %(levelname)s %(message)s',
-                        datefmt='%H:%M:%S',
-                        level=logging.DEBUG)
-
-    data = pd.read_csv("data_combined_preprocessed.csv")
-
+    logging.basicConfig(format='%(asctime)s %(module)s: %(message)s', level=logging.INFO,
+                        datefmt='%H:%M:%S', filename='logs/categorization.log', filemode='w')
+    data = pd.read_csv("data/sentiment-scores.csv")
+    """
     sentiadjs = pd.read_csv("adjectives_and_sentiments.csv")
     sentiadjs.drop_duplicates('word', inplace=True)
     sentiadjs = sentiadjs.set_index('word').T.to_dict('records')[0]
@@ -210,5 +207,5 @@ if __name__ == '__main__':
         for line in f:
             x = line.rstrip()
             negation_words[x] = 1
-
+    """
     Categorizer(data).categorize_main()
