@@ -46,6 +46,7 @@ class SentiScore:
         :param db: The preprocessed data
         :return: The modified database
         """
+        process_start = time()
         # Extract texts and titles from the DB
         titles = db['title'].values
         texts = db['text'].values
@@ -61,6 +62,7 @@ class SentiScore:
         db['text_s_neg'] = text_sentiment[1]
         db['text_s_sum'] = text_sentiment[2]
         db['senti_avg'] = (db['title_s_sum'] + db['text_s_sum']) / 2
+        self.logger.info(f'Whole sentiment analysis done, took {process_start-time()}')
         self.logger.info('Saving result to data/sentiment-scores.csv')
         # Save the result
         db.to_csv('data/sentiment-scores.csv', index=False)
@@ -69,11 +71,12 @@ class SentiScore:
 
 if __name__ == '__main__':
     # Set logging format
-    logging.basicConfig(format='%(asctime)s: %(message)s', level=logging.INFO, datefmt='%H:%M:%S')
+    logging.basicConfig(format='%(asctime)s %(module)s: %(message)s', level=logging.INFO,
+                        datefmt='%H:%M:%S', filename='logs/senti-score.log', filemode='w')
     # Parse arguments
     parser = argparse.ArgumentParser()
-    parser.add_argument('-j', type=str, help='Absolute path to SentiStrength.jar', default='/home/zabrakk/Desktop/NLP/SentiStr/SentiStrength.jar')
-    parser.add_argument('-d', type=str, help='Absolute path to SentiStrength_DataFi', default='/home/zabrakk/Desktop/NLP/SentiStr/SentiDataFI')
+    parser.add_argument('-j', type=str, help='Absolute path to SentiStrength.jar')
+    parser.add_argument('-d', type=str, help='Absolute path to SentiStrength_DataFi')
     args = parser.parse_args()
     # Start SentiStrength
     senti = SentiScore(args.j, args.d)
@@ -95,5 +98,5 @@ if __name__ == '__main__':
     data['text_s_sum'] = text_sentiment[2]
     data['senti_avg'] = (data['title_s_sum'] + data['text_s_sum']) / 2
     # Save the result
-    data.to_csv('sentiment-data2.csv', index=False)
+    data.to_csv('sentiment-data-testrun.csv', index=False)
 
