@@ -42,6 +42,8 @@ class SentiCorrelation:
         Calculates the correlation between sentiment data and predefined index scores
         :return: [Index, Correlation, Data points]
         """
+        self.logger.info('Starting correlation calculation')
+        start = time.time()
         hpi_year_averages = [self.get_year_average(self.db, year) for year in [2009, 2012, 2016]]
         better_life_averages = [self.get_year_average(self.db, year) for year in [2013, 2014, 2015, 2016, 2017]]
         world_happiness_averages = [self.get_year_average(self.db, year) for year in [2015, 2016, 2017]]
@@ -71,22 +73,16 @@ class SentiCorrelation:
         self.logger.info(f'Pearson\'s Correlation for BL unemployment is {pearsonr(self.better_life_unemployment, better_life_averages)[0]}')
         result.append(['Better Life Index - Unemployment', round(pearsonr(self.better_life_unemployment, better_life_averages)[0], 3), len(better_life_averages)])
 
+        self.logger.info(f'Correlation calculated, took {time.time()-start}s')
         return result
 
-
-    def hpi_correlation(self):
-        """
-        Calculates the Pearson correlation between HPI well-being score and the yearly average sentiment
-        :return: None
-        """
-        self.logger.info('Calculating correlation with HPI well-being score')
-        year_avgs = [self.get_year_average(self.sb, year) for year in [2009, 2012, 2016]]
-        correlation, _ = pearsonr(self.fi_hpi, year_avgs)
-        self.logger.info(f'The correlation is {correlation}')
 
 
 
 if __name__ == '__main__':
     # Set logging format
-    logging.basicConfig(format='%(asctime)s: %(message)s', level=logging.INFO, datefmt='%H:%M:%S')
-    SentiCorrelation().correlation()
+    logging.basicConfig(format='%(asctime)s %(module)s: %(message)s', level=logging.INFO,
+                        datefmt='%H:%M:%S', filename='logs/correlation.log', filemode='w')
+
+    data = pd.read_csv('data/sentiment-scores.csv')[['year', 'senti_avg']]
+    SentiCorrelation(data).correlation()
