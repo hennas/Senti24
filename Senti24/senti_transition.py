@@ -67,7 +67,8 @@ class SentiTransition:
 
 if __name__ == '__main__':
     # Set logging format
-    logging.basicConfig(format='%(asctime)s: %(message)s', level=logging.INFO, datefmt='%H:%M:%S')
+    logging.basicConfig(format='%(asctime)s %(module)s: %(message)s', level=logging.INFO,
+                        datefmt='%H:%M:%S', filename='logs/senti-transitions.log', filemode='w')
     # Read the sentiment dat
     data = pd.read_csv('sentiment-data.csv')
     # Create the SentiTransition object
