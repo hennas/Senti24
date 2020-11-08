@@ -51,6 +51,8 @@ class CategoryTransitions:
 
 
 if __name__ == '__main__':
+    logging.basicConfig(format='%(asctime)s %(module)s: %(message)s', level=logging.INFO,
+                        datefmt='%H:%M:%S', filename='logs/category-transitions.log', filemode='w')
     data = pd.read_csv('data/sentiment-data+features.csv')
     ct = CategoryTransitions(data.simple_heuristic_cat)
     ct.get_transitions()
