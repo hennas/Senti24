@@ -10,10 +10,10 @@ from Senti24.senti_score2 import SentiScore
 from Senti24.senti_transition import SentiTransition
 from Senti24.senti_correlation import SentiCorrelation
 from Senti24.senti_plot import SentiPlot
-from Senti24.senti_transition_plot import SentiTransitionPlot
 from Senti24.categorization import Categorizer
 from Senti24.category_transitions import CategoryTransitions
 from Senti24.zipfs_law import ZipfsLaw
+from Senti24.kmeans_categorization import KmeansCategorization
 
 app = Flask(__name__, template_folder='templates')
 # PATHS
@@ -22,6 +22,7 @@ senti_data_path = ''
 db_path = ''
 # DATA
 db = None
+km_obj = None
 # What To Do
 what_to_do = ''
 # LOGGING
@@ -99,7 +100,7 @@ def determine_analysis(what: str):
     :param what: What to do
     :return: What to display to the user
     """
-    global senti_jar_path, senti_jar_path, db
+    global senti_jar_path, senti_jar_path, db, km_obj, logger
     # Sentiment calculation
     if what == 'sentiScore':
         if db is None:
@@ -126,7 +127,7 @@ def determine_analysis(what: str):
         # Sentiment scores not found
         else:
             return ['block', 'Please calculate the sentiment scores first', 'none', '']
-    # Thread categorization
+    # Simple Thread categorization
     elif what == 'categorize':
         # Check memory
         if 'senti_avg' in db:
@@ -139,7 +140,7 @@ def determine_analysis(what: str):
             logger.info('Sentiment scores not in memory, using data/sentiment-scores.csv')
             data = pd.read_csv('data/sentiment-scores.csv')
             Categorizer(data).categorize_main()
-            data = None # Remove this from memory
+            data = None  # Remove this from memory
             return ['block', 'Threads Categorized! You can view the result form the file data/sentiment-data+features.csv', 'none', '']
         # Sentiment scores not found
         else:
@@ -148,8 +149,29 @@ def determine_analysis(what: str):
     elif what == 'categoryTransition':
         if not path.exists('data/sentiment-data+features.csv'):
             return ['block', 'Please complete thread categorization first', 'none', '']
-        CategoryTransitions().get_transitions()
+        logger.info('Reading data/sentiment-data+features.csv')
+        data = pd.read_csv('data/sentiment-data+features.csv').simple_heuristic_cat
+        CategoryTransitions(data).get_transitions()
+        data = None  # Delete from memory
         return ['block', 'Category Transitions calculated! You can view the results from data/category_transitions.csv', 'none', '']
+    # K-Means Thread categorization
+    elif what == 'kmeans-categorize':
+        # Check memory
+        if not path.exists('data/sentiment-data+features.csv'):
+            logger.info('Simple heuristis has not been ran yet, k-means requires the result from it')
+            return ['block',
+                    'The file data/sentiment-data+features.csv is required, please run the Simple Heuristic first!',
+                    'none', '']
+        km_obj = KmeansCategorization()
+        km_obj.kmeans_main()
+        return ['block', "K-Means categorization done! Get more results with K-means transitions or Zipf's Law",
+                'none', '']
+    # K-Means Category transitions
+    elif what_to_do == 'kmeans-categoryTransition':
+        if km_obj is None:
+            return ['block', 'Complete K-Means categorization first!', 'none', '']
+        CategoryTransitions(km_obj.all_data.kmeans_cat).get_transitions()
+        return ['block', 'Category Transitions calculated for K-Means! See results by visualizing Transitions', 'none', '']
 
     # No match. This should only happen when the user first loads /
     return ['none', '', 'none', '']
@@ -185,7 +207,7 @@ def display_transitions():
     """
     global what_to_do, logger
     logger.info('User accessing /transitions')
-    if what_to_do == 'visSentiTranstition':
+    if what_to_do == 'visSentiTransitions':
         what_to_do = ''
         data = pd.read_csv('data/sentiment-transitions.csv')
         data = data.values.tolist()
@@ -194,8 +216,10 @@ def display_transitions():
     elif what_to_do == 'visCategoryTransition':
         what_to_do = ''
         data = pd.read_csv('data/category_transitions.csv')
+        cols = data.columns.values.tolist()
         data = data.values.tolist()
-        data[:0] = [['FROM/TO', 'Announcement', 'Question', 'Negative Reaction', 'Appreciation', 'Narration', 'Positive Narration', 'Negative Narration']]
+        cols[0] = 'FROM/TO'
+        data[:0] = [cols]
         return render_template('transitions.html', display='none', msg='', data=data, len_rows=len(data),
                                len_cols=len(data[0]))
     else:
@@ -242,7 +266,7 @@ def create_figure():
     Determines which image the GUI should display and starts drawing that
     :return: The figure
     """
-    global what_to_do, db, logger
+    global what_to_do, db, km_obj, logger
     fig = None
     # Sentiment Evolution
     if what_to_do == 'visSenti':
@@ -251,12 +275,21 @@ def create_figure():
         elif path.exists('data/sentiment-scores.csv'):
             data = pd.read_csv('data/sentiment-scores.csv')[['year', 'month', 'senti_avg']]
             fig = SentiPlot().draw_to_gui(data)
-    #elif what_to_do == 'visSentiTranstition' and path.exists('data/sentiment-transitions.csv'):
-    #    data = pd.read_csv('data/sentiment-transitions.csv')
-    #    fig = SentiTransitionPlot().draw_for_gui(data)
-    # Zipf's Law
+    # Zipf's Law for Simple heuristic
     elif what_to_do == 'zipf' and path.exists('data/sentiment-data+features.csv'):
-        fig = ZipfsLaw().fit_zipfs_law()
+        logger.info('Reading data/sentiment-data+features.csv')
+        data = pd.read_csv('data/sentiment-data+features.csv').simple_heuristic_cat
+        fig = ZipfsLaw(data).fit_zipfs_law()
+        data = None  # Remove form memory
+    # Zipf's Law for K-means
+    elif what_to_do =='kmeans-zipf':
+        if km_obj is None:
+            fig = Figure()
+            axis = fig.add_subplot(1, 1, 1)
+            axis.set_title('Complete K-Means categorization first!')
+        else:
+            fig = ZipfsLaw(km_obj.all_data.kmeans_cat).fit_zipfs_law()
+    # No data or something went wrong
     else:
         fig = Figure()
         axis = fig.add_subplot(1, 1, 1)

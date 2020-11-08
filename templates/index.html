@@ -20,8 +20,10 @@
             Analysis: <br>
             <button name="subject" type="submit" value="sentiScore">Sentiment Scores</button>
             <button name="subject" type="submit" value="sentiTransition">Sentiment Transitions</button>
-            <button name="subject" type="submit" value="categorize">Categorize Threads</button>
-            <button name="subject" type="submit" value="categoryTransition">Category Transitions</button>
+            <button name="subject" type="submit" value="categorize">Simple Categorization</button>
+            <button name="subject" type="submit" value="categoryTransition">Simple Category Transitions</button>
+            <button name="subject" type="submit" value="kmeans-categorize">K-Means Categorization</button>
+            <button name="subject" type="submit" value="kmeans-categoryTransition">K-means Category Transitions</button>
         </form>
 
         <div style="display: {{ display_analysis_msg }};">
@@ -32,10 +34,11 @@
         <form action="/" method="post">
             Choose Plot to Visualize: <br>
             <button name="subject" type="submit" value="visSenti">Sentiment Evolution</button>
-            <button name="subject" type="submit" value="visSentiTranstition">Sentiment Transitions</button>
+            <button name="subject" type="submit" value="visSentiTransitions">Sentiment Transitions</button>
             <button name="subject" type="submit" value="correlate">Index Correlation</button>
             <button name="subject" type="submit" value="visCategoryTransition">Category Transitions</button>
             <button name="subject" type="submit" value="zipf">Zipf's Law</button>
+            <button name="subject" type="submit" value="kmeans-zipf">K-Means Zipf's Law</button>
         </form>
 
         <div style="display: {{ display_visualize_msg }};">
