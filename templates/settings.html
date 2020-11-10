@@ -8,28 +8,28 @@
         <form action="/settings" method="POST">
             <!--Inputs for the required paths-->
             <label for="jar_path">Absolute path to SentiStrength.jar</label><br>
-            <input type="text" id="jar_path" name="jar_path" value="{{ jar }}"><br>
+            <input type="text" id="jar_path" name="jar_path" value="{{ jar }}" size="40"><br>
 
             <div style="display: {{ display_jar }};">
-                <h3>Could not find SentiStrength.jar, make sure that the given path is correct</h3>
+                <h3>Important Msg: Could not find SentiStrength.jar, make sure that the given path is correct</h3>
             </div>
 
             <label for="data_path">Absolute path to SentiStrength Finnish Data</label><br>
-            <input type="text" id="data_path" name="data_path" value="{{ data }}"><br>
+            <input type="text" id="data_path" name="data_path" value="{{ data }}" size="40"><br>
 
             <div style="display: {{ display_data }};">
-                <h3>Could find SentiStrengthFi/, make sure that the given path is correct</h3>
+                <h3>Important Msg: Could find SentiStrengthFI/, make sure that the given path is correct</h3>
             </div>
 
-            <label for="db_path">Absolute path to the Database</label><br>
-            <input type="text" id="db_path" name="db_path" value="{{ db }}"><br>
+            <label for="db_path">Relative path to the Pre-Processed data. No need to change if the below path is correct</label><br>
+            <input type="text" id="db_path" name="db_path" value="{{ db }}" size="40"><br>
 
             <div style="display: {{ display_db }};">
-                <h3>Could not load database, make sure that the given path is correct</h3>
+                <h3>Important Msg: Could not load database, make sure that the given path is correct</h3>
             </div>
 
             <!--Button to update the settings with-->
-            <h4>Note: Updating the settings takes some time, as the database is loaded into memory</h4>
+            <h4>Note: Updating the settings takes some time, as the pre-processed data is loaded into memory</h4>
             <input name="update" type="submit" value="Update Settings">
         </form>
     </body>
