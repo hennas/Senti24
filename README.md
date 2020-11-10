@@ -5,7 +5,8 @@ Database with Sentiments and Categories: (ADD LINK HERE)
 Full GUI environment: (ADD LINK HERE)
 
 ## Setup
-The full environment required for the GUI to work, can be downloaded from here: (ADD DROPBOX LINK)
+The full environment required for the GUI to work, can be downloaded from here: (ADD DROPBOX LINK) </br>
+It contains the 2GB pre-processed data used for the analysis. You may also need 16GB of RAM to run this code.
 
 You can install the required Python libraries with:
 ```bash
