@@ -1,0 +1,28 @@
+ehdoton	1
+täysin	1	9 June 2010
+voisi	-1	9 June 2010
+ehdottomasti	1
+varmasti	1
+teki	-1	9 June 2010 [past is less strong]
+erityisesti	1	9 June 2010
+erittäin	2
+erityisen	1
+vitun	2
+hiton	2
+saatanan	2
+helvetin	2
+ihan	1
+tosi	2
+todella	2
+uskomattoman	2
+vain	-1
+ehkä	-1	9 June 2010
+ylivoimaisesti	2
+pitäisi	-1	9 June 2010
+hieman	-1	9 June 2010
+joten	0	Was 1 but sometimes used as neutral or mild term
+niin	1
+joskus	-1	9 June 2010
+yhteensä	-1
+koko	1	9 June 2010
+kokonaan	1	9 June 2010
