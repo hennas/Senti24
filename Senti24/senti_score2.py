@@ -46,7 +46,7 @@ class SentiScore:
         :param db: The preprocessed data
         :return: The modified database
         """
-        process_start = time()
+        process_start = time.time()
         # Extract texts and titles from the DB
         titles = db['title'].values
         texts = db['text'].values
