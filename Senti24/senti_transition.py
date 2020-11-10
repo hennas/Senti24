@@ -55,7 +55,7 @@ class SentiTransition:
         Saves the sentiment transitions to data/sentiment-transitions.csv
         :return: Nothing
         """
-        self.logger.info('Saving results')
+        self.logger.info('Saving results to data/sentiment-transitions.csv')
         start = time.time()
         for key in self.transitions.keys():
             frm, to = key.split('_')
