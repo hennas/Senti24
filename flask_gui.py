@@ -19,10 +19,10 @@ app = Flask(__name__, template_folder='templates')
 # PATHS
 senti_jar_path = ''
 senti_data_path = ''
-db_path = ''
+db_path = 'data/data_combined_preprocessed.csv'
 # DATA
 db = None
-km_obj = None
+kmeans_cat = None
 # What To Do
 what_to_do = ''
 # LOGGING
@@ -54,7 +54,7 @@ def index():
             what_to_do = ''
             return redirect('/correlation')
         # Displaying Sentiment transitions
-        elif what_to_do == 'visSentiTranstition' and path.exists('data/sentiment-transitions.csv'):
+        elif what_to_do == 'visSentiTransitions' and path.exists('data/sentiment-transitions.csv'):
             return redirect('/transitions')
         # Display category transitions
         elif what_to_do == 'visCategoryTransition' and path.exists('data/category_transitions.csv'):
@@ -100,7 +100,7 @@ def determine_analysis(what: str):
     :param what: What to do
     :return: What to display to the user
     """
-    global senti_jar_path, senti_jar_path, db, km_obj, logger
+    global senti_jar_path, senti_jar_path, db, kmeans_cat, logger
     # Sentiment calculation
     if what == 'sentiScore':
         if db is None:
@@ -164,13 +164,15 @@ def determine_analysis(what: str):
                     'none', '']
         km_obj = KmeansCategorization()
         km_obj.kmeans_main()
-        return ['block', "K-Means categorization done! Get more results with K-means transitions or Zipf's Law",
+        kmeans_cat = km_obj.all_data.kmeans_cat
+        km_obj = None  # Conserve memory
+        return ['block', "K-Means categorization done! Get more results with category transitions or K-means Zipf's Law",
                 'none', '']
     # K-Means Category transitions
     elif what_to_do == 'kmeans-categoryTransition':
-        if km_obj is None:
+        if kmeans_cat is None:
             return ['block', 'Complete K-Means categorization first!', 'none', '']
-        CategoryTransitions(km_obj.all_data.kmeans_cat).get_transitions()
+        CategoryTransitions(kmeans_cat).get_transitions()
         return ['block', 'Category Transitions calculated for K-Means! See results by visualizing Transitions', 'none', '']
 
     # No match. This should only happen when the user first loads /
@@ -191,12 +193,12 @@ def load_settings() -> [str]:
     if not path.exists(senti_data_path):
         logger.info('Could not find Finnish data for SentiStrength')
         result[1] = 'block'
-    try:
+    if not path.exists(db_path):
+        logger.info('Could not find data_combined_preprocessed.csv in the given location')
+        result[2] = 'block'
+    if path.exists(senti_jar_path) and path.exists(senti_data_path) and path.exists(db_path):
         db = pd.read_csv(db_path, engine='python')
         logger.info(f'Databased loaded, contains {len(db)} lines')
-    except FileNotFoundError:
-        logger.info('Failed to load database from the given location')
-        result[2] = 'block'
     return result
 
 @app.route('/transitions')
@@ -266,7 +268,7 @@ def create_figure():
     Determines which image the GUI should display and starts drawing that
     :return: The figure
     """
-    global what_to_do, db, km_obj, logger
+    global what_to_do, db, kmeans_cat, logger
     fig = None
     # Sentiment Evolution
     if what_to_do == 'visSenti':
@@ -283,12 +285,12 @@ def create_figure():
         data = None  # Remove form memory
     # Zipf's Law for K-means
     elif what_to_do =='kmeans-zipf':
-        if km_obj is None:
+        if kmeans_cat is None:
             fig = Figure()
             axis = fig.add_subplot(1, 1, 1)
             axis.set_title('Complete K-Means categorization first!')
         else:
-            fig = ZipfsLaw(km_obj.all_data.kmeans_cat).fit_zipfs_law()
+            fig = ZipfsLaw(kmeans_cat).fit_zipfs_law()
     # No data or something went wrong
     else:
         fig = Figure()
