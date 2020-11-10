@@ -45,7 +45,7 @@ After completing the settings page, you will be directed to the main page. For t
 * K-Means Categorization (**Requires the result from Simple Heuristic**) 
     * The result of this is only loaded to memory, not saved!
 * K-Means Category Transitions (Must have K-Means Categorization in memory)
-* Category Transitions (Must have K-Means Categorization in memory)
+* Category Transitions
 * K-Means Zipf's Law (Must have K-Means Categorization in memory)
 
 After pressing one of the "Analysis" buttons and waiting patiently, a message will appear below the buttons informing you that the process has been completed.
