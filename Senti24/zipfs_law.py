@@ -54,24 +54,26 @@ class ZipfsLaw:
 
         freqs_sorted = [v[1] for v in freqs_ranks]
         ranks_sorted = [v[2] for v in freqs_ranks]
-        params, cov = curve_fit(self.power_law, [v[2] for v in freqs_ranks], [v[1] for v in freqs_ranks])
+        params, cov = curve_fit(self.power_law, ranks_sorted, freqs_sorted)
+        expected_zipf_freq = [freqs_sorted[0]/ i for i in range(1,len(ranks_sorted)+1)]
         # print(params)
 
         fig = plt.figure(figsize=(20, 8))
         ax1, ax2 = fig.subplots(1, 2)
-        ax1.plot(log_ranks, log_freqs, 'bo', markersize=8, label="Data points")
-        ax1.plot(log_ranks, a * np.array(log_ranks) + b, 'r--', linewidth=2, label="Linear Fit")
+        ax1.plot(ranks_sorted, freqs_sorted, 'bo', markersize=8, label="Data points")
+        ax1.plot(ranks_sorted, power_law(np.array(ranks_sorted), *params), 'r--', linewidth=2, label="Power Law Fit")
+        ax1.plot(ranks_sorted, expected_zipf_freq, 'b--', linewidth=2, label="Expected freq for Zipf's law")
         ax1.legend(loc="best")
-        ax1.set_ylabel('log(frequency)', fontsize=15)
-        ax1.set_xlabel('log(rank)', fontsize=15)
-        ax1.set_title('Log-log plot of category frequencies and ranks + linear fit', fontsize=16)
+        ax1.set_ylabel('frequency', fontsize=18)
+        ax1.set_xlabel('rank', fontsize=18)
+        ax1.set_title('Plot of category frequencies and ranks', fontsize=19)
 
-        ax2.plot(ranks_sorted, freqs_sorted, 'bo', markersize=8, label="Data points")
-        ax2.plot(ranks_sorted, self.power_law(np.array(ranks_sorted), *params), 'r--', linewidth=2, label="Power Law Fit")
+        ax2.plot(log_ranks, log_freqs, 'bo', markersize=8, label="Data points")
+        ax2.plot(log_ranks, a*np.array(log_ranks)+b, 'r--', linewidth=2, label="Linear Fit")
         ax2.legend(loc="best")
-        ax2.set_ylabel('frequency', fontsize=15)
-        ax2.set_xlabel('rank', fontsize=15)
-        ax2.set_title('Category frequencies and ranks plot + power law fit', fontsize=16)
+        ax2.set_ylabel('log(frequency)', fontsize=18)
+        ax2.set_xlabel('log(rank)', fontsize=18)
+        ax2.set_title('Log-log plot of category frequencies and ranks', fontsize=19)
 
         self.logger.info(f'Plot done, took {time()-start}')
         return fig
