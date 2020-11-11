@@ -170,9 +170,12 @@ def determine_analysis(what: str):
                 'none', '']
     # K-Means Category transitions
     elif what_to_do == 'kmeans-categoryTransition':
-        if kmeans_cat is None:
+        if kmeans_cat is None and not path.exists('data/kmeans_categorization.csv'):
             return ['block', 'Complete K-Means categorization first!', 'none', '']
-        CategoryTransitions(kmeans_cat).get_transitions()
+        if kmeans_cat is None:
+            logger.info('Reading data/kmeans_categorization.csv')
+            kmeans_cat = pd.read_csv('data/kmeans_categorization.csv')
+        CategoryTransitions(kmeans_cat.kmeans_cat).get_transitions()
         return ['block', 'Category Transitions calculated for K-Means! See results by visualizing Transitions', 'none', '']
 
     # No match. This should only happen when the user first loads /
@@ -285,12 +288,16 @@ def create_figure():
         data = None  # Remove form memory
     # Zipf's Law for K-means
     elif what_to_do =='kmeans-zipf':
-        if kmeans_cat is None:
+        if kmeans_cat is not None:
+            fig = ZipfsLaw(kmeans_cat.kmeans_cat).fit_zipfs_law()
+        elif path.exists('data/kmeans_categorization.csv'):
+            logger.info('Reading data/kmeans_categorization.csv')
+            kmeans_cat = pd.read_csv('data/kmeans_categorization.csv')
+            fig = ZipfsLaw(kmeans_cat.kmeans_cat).fit_zipfs_law()
+        else:
             fig = Figure()
             axis = fig.add_subplot(1, 1, 1)
             axis.set_title('Complete K-Means categorization first!')
-        else:
-            fig = ZipfsLaw(kmeans_cat).fit_zipfs_law()
     # No data or something went wrong
     else:
         fig = Figure()
