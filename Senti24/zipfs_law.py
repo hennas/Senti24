@@ -61,7 +61,7 @@ class ZipfsLaw:
         fig = plt.figure(figsize=(20, 8))
         ax1, ax2 = fig.subplots(1, 2)
         ax1.plot(ranks_sorted, freqs_sorted, 'bo', markersize=8, label="Data points")
-        ax1.plot(ranks_sorted, power_law(np.array(ranks_sorted), *params), 'r--', linewidth=2, label="Power Law Fit")
+        ax1.plot(ranks_sorted, self.power_law(np.array(ranks_sorted), *params), 'r--', linewidth=2, label="Power Law Fit")
         ax1.plot(ranks_sorted, expected_zipf_freq, 'b--', linewidth=2, label="Expected freq for Zipf's law")
         ax1.legend(loc="best")
         ax1.set_ylabel('frequency', fontsize=18)
