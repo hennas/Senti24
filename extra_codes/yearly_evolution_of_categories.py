@@ -51,6 +51,6 @@ def yearly_category_evolution(data, cat_col, plot_only_cats = []):
     return fig
     
 if __name__ == '__main__':
-    data = pd.read_csv('sentiment-data+features.csv')
+    data = pd.read_csv('data/database.csv')
     fig = yearly_category_evolution(data, 'simple_heuristic_cat', ['Negative Reaction','Negative Narration'])
     fig.savefig('negative_cats.png', format="png")
