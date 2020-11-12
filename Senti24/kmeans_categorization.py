@@ -21,10 +21,9 @@ K-Means categorization of the threads
 
 
 class KmeansCategorization:
-    def __init__(self):
+    def __init__(self, data: pd.DataFrame):
         self.logger = logging.getLogger('kmeans')
-        self.logger.info('Reading data/sentiment-data+features.csv')
-        self.data = pd.read_csv('data/sentiment-data+features.csv')
+        self.data = data
         self.ids_by_year = self.load_thread_ids()
         self.features = [  # 'title_s_sum','text_s_sum',
             'senti_avg',  # 'title_length', 'text_length',
@@ -171,8 +170,10 @@ if __name__ == '__main__':
     #        ids_by_year.append([x.rstrip() for x in f.readlines()])
 
     #data = pd.read_csv('data/sentiment-data+features.csv')
-    km_obj = KmeansCategorization()
+    data = pd.read_csv('data/database.csv')
+    km_obj = KmeansCategorization(data)
     km_obj.kmeans_main()
+    km_obj.all_data.kmeans_cat.to_csv('data/kmeans_categorization.csv', index=False)
 
     # for i in range(0,6):
     #   print(km_obj.all_data[km_obj.all_data.labels == i].groupby('simple_heuristic_cat').count())
@@ -182,4 +183,4 @@ if __name__ == '__main__':
     fig.savefig('zipf_kmeans.png', format="png")
 
     # Calculate category transitions
-    CategoryTransitions(km_obj.all_data.kmeans_cat).get_transitions()
+    CategoryTransitions(km_obj.all_data.kmeans_cat, 'data/kmeans_transitions.csv').get_transitions()

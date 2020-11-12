@@ -65,7 +65,7 @@ class SentiScore:
         self.logger.info(f'Whole sentiment analysis done, took {time.time()-process_start}')
         self.logger.info('Saving result to data/sentiment-scores.csv')
         # Save the result
-        db.to_csv('data/sentiment-scores.csv', index=False)
+        db.to_csv('data/database.csv', index=False)
         return db
 
 
@@ -98,5 +98,5 @@ if __name__ == '__main__':
     data['text_s_sum'] = text_sentiment[2]
     data['senti_avg'] = (data['title_s_sum'] + data['text_s_sum']) / 2
     # Save the result
-    data.to_csv('sentiment-data-testrun.csv', index=False)
+    data.to_csv('data/database.csv', index=False)
 

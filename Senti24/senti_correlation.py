@@ -84,5 +84,5 @@ if __name__ == '__main__':
     logging.basicConfig(format='%(asctime)s %(module)s: %(message)s', level=logging.INFO,
                         datefmt='%H:%M:%S', filename='logs/correlation.log', filemode='w')
 
-    data = pd.read_csv('data/sentiment-scores.csv')[['year', 'senti_avg']]
+    data = pd.read_csv('data/database.csv')[['year', 'senti_avg']]
     SentiCorrelation(data).correlation()

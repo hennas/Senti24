@@ -151,7 +151,7 @@ class Categorizer:
         self.logger.info(f'Done categorizing, took {time()-start2}s')
 
         self.logger.info("Categories added to the data frame, and now saving the data frame")
-        self.data.to_csv('data/sentiment-data+features.csv', index=False)
+        self.data.to_csv('data/database.csv', index=False)
         self.logger.info(f'Categorization done! Whole process took {time()-start}s')
 
     def load_sentiadjs(self) -> pd.DataFrame:
@@ -183,29 +183,5 @@ if __name__ == '__main__':
     # Initialize logging into the file "categorization.log"
     logging.basicConfig(format='%(asctime)s %(module)s: %(message)s', level=logging.INFO,
                         datefmt='%H:%M:%S', filename='logs/categorization.log', filemode='w')
-    data = pd.read_csv("data/sentiment-scores.csv")
-    """
-    sentiadjs = pd.read_csv("adjectives_and_sentiments.csv")
-    sentiadjs.drop_duplicates('word', inplace=True)
-    sentiadjs = sentiadjs.set_index('word').T.to_dict('records')[0]
-
-    swears = {}
-    question_words = {}
-    negation_words = {}
-
-    with open('swearing.txt', 'r', encoding='utf-8') as f:
-        for line in f:
-            x = line.rstrip()
-            swears[x] = 1
-
-    with open('q_words.txt', 'r', encoding='utf-8') as f:
-        for line in f:
-            x = line.rstrip()
-            question_words[x] = 1
-
-    with open('neg_words.txt', 'r', encoding='utf-8') as f:
-        for line in f:
-            x = line.rstrip()
-            negation_words[x] = 1
-    """
+    data = pd.read_csv("data/database.csv")
     Categorizer(data).categorize_main()

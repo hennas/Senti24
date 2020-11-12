@@ -4,11 +4,12 @@ from time import time
 
 
 class CategoryTransitions:
-    def __init__(self, data: pd.DataFrame):
+    def __init__(self, data: pd.DataFrame, save_to: str):
         self.logger = logging.getLogger('category-transitions')
         self.data = data
+        self.save_to = save_to
 
-    def calculate_category_transitions(self, categories) -> dict:
+    def calculate_category_transitions(self, categories):
         """
         Calculates all category transitions. Assumes that the given column of categories is
         in the right order, i.e., the threads are organized in an ascending order by datetime.
@@ -34,7 +35,7 @@ class CategoryTransitions:
         table = pd.DataFrame(columns=unique_cats, index=unique_cats)
         for k, v in transitions.items():
             table.loc[k[0], k[1]] = v
-        table.to_csv('data/category_transitions.csv')
+        table.to_csv(f'{self.save_to}')
 
     def get_transitions(self):
         """
@@ -45,7 +46,7 @@ class CategoryTransitions:
         self.logger.info('Starting transition calculation')
         t_counts = self.calculate_category_transitions(self.data)
         self.logger.info(f'Done calculating transitions, took {time()-start}s')
-        self.logger.info('Saving result to data/category_transitions.csv')
+        self.logger.info(f'Saving result to {self.save_to}')
         self.cross_table(self.data.unique(), t_counts)
         self.logger.info('Results saved!')
 
@@ -53,8 +54,8 @@ class CategoryTransitions:
 if __name__ == '__main__':
     logging.basicConfig(format='%(asctime)s %(module)s: %(message)s', level=logging.INFO,
                         datefmt='%H:%M:%S', filename='logs/category-transitions.log', filemode='w')
-    data = pd.read_csv('data/sentiment-data+features.csv')
-    ct = CategoryTransitions(data.simple_heuristic_cat)
+    data = pd.read_csv('data/database.csv')
+    ct = CategoryTransitions(data.simple_heuristic_cat, 'data/simple_transitions.csv')
     ct.get_transitions()
 
     # t_counts = ct.calculate_category_transitions(data.simple_heuristic_cat)

@@ -70,7 +70,7 @@ if __name__ == '__main__':
     logging.basicConfig(format='%(asctime)s %(module)s: %(message)s', level=logging.INFO,
                         datefmt='%H:%M:%S', filename='logs/senti-transitions.log', filemode='w')
     # Read the sentiment dat
-    data = pd.read_csv('sentiment-data.csv')
+    data = pd.read_csv('data/database.csv')
     # Create the SentiTransition object
     st = SentiTransition()
     # Get a list of sentiment averages

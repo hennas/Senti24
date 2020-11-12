@@ -99,7 +99,7 @@ if __name__ == '__main__':
     # Set logging format
     logging.basicConfig(format='%(asctime)s: %(message)s', level=logging.INFO, datefmt='%H:%M:%S')
     # Read the sentiment data
-    data = pd.read_csv('sentiment-data.csv')
+    data = pd.read_csv('data/database.csv')
     # Draw the monthly plot
     SentiPlot().draw(data[['year', 'month', 'senti_avg']], True)
 
