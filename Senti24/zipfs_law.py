@@ -80,6 +80,6 @@ class ZipfsLaw:
 
 
 if __name__ == '__main__':
-    data = pd.read_csv('data/sentiment-data+features.csv')
+    data = pd.read_csv('data/database.csv')
     fig = ZipfsLaw(data.simple_heuristic_cat).fit_zipfs_law()
     fig.savefig('zipf.png', format="png")
