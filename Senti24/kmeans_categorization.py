@@ -138,8 +138,7 @@ class KmeansCategorization:
         self.all_data = pd.concat([self.train_data, self.test_data], ignore_index=True)
 
         categories = all_labels.replace([0, 1, 2, 3, 4, 5],
-                                        ['Short Text', 'Question', 'Question/Descriptive', 'Negative text',
-                                         'Announcement', 'Rant'])
+                                        ['Short Text','Question','Negative text','Announcement','Question/Descriptive','Rant'])
 
         self.all_data['labels'] = all_labels
         self.all_data['kmeans_cat'] = categories
