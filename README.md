@@ -1,7 +1,7 @@
 # Senti24
 
 ## IMPORTANT DOWNLOADS
-Database with Sentiments and Categories: (ADD LINK HERE)
+Database with Sentiments and Categories: https://www.dropbox.com/s/u0of7549lmkx7ko/database.zip?dl=1
 
 Full GUI environment: (ADD LINK HERE)
 
