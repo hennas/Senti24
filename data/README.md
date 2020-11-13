@@ -1,6 +1,6 @@
 # Data Used in the analysis
 
-**NOTE:** Does not include the preprocessed dataset due to its size. You can download that from Dropbox (LINK HERE)
+**NOTE:** Does not include the preprocessed dataset due to its size. [You can download that from Dropbox](https://www.dropbox.com/s/xxgg5i6oj1oe2tk/pre-processed-data.zip?dl=1)
 
 * Simple heuristic and K-means specific:
     * **(year)_ids.txt**: Ids for the 900000 threads categorized by K-means
