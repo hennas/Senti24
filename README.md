@@ -23,6 +23,8 @@ $ pip3 install -r requirements.txt
 ```
 Getting word_tokenize() from the NTLK library working, might require some extra steps.
 
+If the GUI info provided in this README is not enough, email us.
+
 ## Running the GUI
 After completing the setup, you can run the GUI with the following command:
 ```bash
