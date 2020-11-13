@@ -2,7 +2,7 @@
 
 ## IMPORTANT DOWNLOADS
 Pre-processed data for analysis: https://www.dropbox.com/s/xxgg5i6oj1oe2tk/pre-processed-data.zip?dl=1
-* **IF YOU WANT TO TEST THE ANALYSIS, YOU MUST DOWNLOAD THIS FILE, EXTRACT IT, AND PLACE THE data_preprocessed_combined.csv IN THE data/ DIRECTORY OF THIS PROJECT!**
+* **IF YOU WANT TO TEST THE ANALYSIS, YOU MUST DOWNLOAD THIS FILE, EXTRACT IT, AND PLACE THE data_combined_preprocessed.csv IN THE data/ DIRECTORY OF THIS PROJECT!**
 
 Database with Sentiments and Categories: https://www.dropbox.com/s/dnn96hgi59ufivd/database.zip?dl=1
 * Read the files as UTF-8, so they will display properly
