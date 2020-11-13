@@ -8,7 +8,13 @@ Database with Sentiments and Categories: https://www.dropbox.com/s/dnn96hgi59ufi
 * Read the files as UTF-8, so they will display properly
 
 ## Setup
-**Before starting the analysis, you must [download the pre-processed data](https://www.dropbox.com/s/xxgg5i6oj1oe2tk/pre-processed-data.zip?dl=1) , and place it in the data/ folder** </br>
+Git clone the project, and go to its directory:
+```bash
+$ git clone https://github.com/hennas/Senti24.git
+$ cd Senti24
+```
+
+**Before starting the analysis, you must [download the pre-processed data](https://www.dropbox.com/s/xxgg5i6oj1oe2tk/pre-processed-data.zip?dl=1), extract it, and place it in the data/ folder**. </br>
 It contains the 2GB pre-processed data used in the analysis, as files that big can't be uploaded here. You may also need 16GB of RAM to run this code.
 
 You can install the required Python libraries with:
